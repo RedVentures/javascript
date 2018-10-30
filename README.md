@@ -1,64 +1,52 @@
-# Airbnb JavaScript Style Guide() {
+# RV QAE JavaScript Style Guide() {
 
 *A mostly reasonable approach to JavaScript*
 
 > **Note**: this guide assumes you are using [Babel](https://babeljs.io), and requires that you use [babel-preset-airbnb](https://npmjs.com/babel-preset-airbnb) or the equivalent. It also assumes you are installing shims/polyfills in your app, with [airbnb-browser-shims](https://npmjs.com/airbnb-browser-shims) or the equivalent.
 
-[![Downloads](https://img.shields.io/npm/dm/eslint-config-airbnb.svg)](https://www.npmjs.com/package/eslint-config-airbnb)
-[![Downloads](https://img.shields.io/npm/dm/eslint-config-airbnb-base.svg)](https://www.npmjs.com/package/eslint-config-airbnb-base)
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/airbnb/javascript?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
-This guide is available in other languages too. See [Translation](#translation)
-
 Other Style Guides
 
-  - [ES5 (Deprecated)](https://github.com/airbnb/javascript/tree/es5-deprecated/es5)
-  - [React](react/)
-  - [CSS-in-JavaScript](css-in-javascript/)
-  - [CSS & Sass](https://github.com/airbnb/css)
-  - [Ruby](https://github.com/airbnb/ruby)
+  - N/A
 
 ## Table of Contents
 
   1. [Types](#types)
-  1. [References](#references)
-  1. [Objects](#objects)
-  1. [Arrays](#arrays)
-  1. [Destructuring](#destructuring)
-  1. [Strings](#strings)
-  1. [Functions](#functions)
-  1. [Arrow Functions](#arrow-functions)
-  1. [Classes & Constructors](#classes--constructors)
-  1. [Modules](#modules)
-  1. [Iterators and Generators](#iterators-and-generators)
-  1. [Properties](#properties)
-  1. [Variables](#variables)
-  1. [Hoisting](#hoisting)
-  1. [Comparison Operators & Equality](#comparison-operators--equality)
-  1. [Blocks](#blocks)
-  1. [Control Statements](#control-statements)
-  1. [Comments](#comments)
-  1. [Whitespace](#whitespace)
-  1. [Commas](#commas)
-  1. [Semicolons](#semicolons)
-  1. [Type Casting & Coercion](#type-casting--coercion)
-  1. [Naming Conventions](#naming-conventions)
-  1. [Accessors](#accessors)
-  1. [Events](#events)
-  1. [jQuery](#jquery)
-  1. [ECMAScript 5 Compatibility](#ecmascript-5-compatibility)
-  1. [ECMAScript 6+ (ES 2015+) Styles](#ecmascript-6-es-2015-styles)
-  1. [Standard Library](#standard-library)
-  1. [Testing](#testing)
-  1. [Performance](#performance)
-  1. [Resources](#resources)
-  1. [In the Wild](#in-the-wild)
-  1. [Translation](#translation)
-  1. [The JavaScript Style Guide Guide](#the-javascript-style-guide-guide)
-  1. [Chat With Us About JavaScript](#chat-with-us-about-javascript)
-  1. [Contributors](#contributors)
-  1. [License](#license)
-  1. [Amendments](#amendments)
+  2. [References](#references)
+  3. [Objects](#objects)
+  4. [Arrays](#arrays)
+  5. [Destructuring](#destructuring)
+  6. [Strings](#strings)
+  7. [Functions](#functions)
+  8. [Arrow Functions](#arrow-functions)
+  9. [Classes & Constructors](#classes--constructors)
+  10. [Modules](#modules)
+  11. [Iterators and Generators](#iterators-and-generators)
+  12. [Properties](#properties)
+  13. [Variables](#variables)
+  14. [Hoisting](#hoisting)
+  15. [Comparison Operators & Equality](#comparison-operators--equality)
+  16. [Blocks](#blocks)
+  17. [Control Statements](#control-statements)
+  18. [Comments](#comments)
+  19. [Whitespace](#whitespace)
+  20. [Commas](#commas)
+  21. [Semicolons](#semicolons)
+  22. [Type Casting & Coercion](#type-casting--coercion)
+  23. [Naming Conventions](#naming-conventions)
+  24. [Accessors](#accessors)
+  25. [Events](#events)
+  26. [jQuery](#jquery)
+  27. [File Contents](#file-contents)
+  28. [ECMAScript 5 Compatibility](#ecmascript-5-compatibility)
+  29. [ECMAScript 6+ (ES 2015+) Styles](#ecmascript-6-es-2015-styles)
+  30. [Standard Library](#standard-library)
+  31. [Testing](#testing)
+  32. [Performance](#performance)
+  33. [Resources](#resources)
+  34. [The JavaScript Style Guide Guide](#the-javascript-style-guide-guide)
+  35. [Contributors](#contributors)
+  36. [License](#license)
+  37. [Amendments](#amendments)
 
 ## Types
 
@@ -322,6 +310,26 @@ Other Style Guides
     const copy = { ...original, c: 3 }; // copy => { a: 1, b: 2, c: 3 }
 
     const { a, ...noA } = copy; // noA => { b: 2, c: 3 }
+    ```
+  <a name="objects--camel-case-property-names"></a><a name="3.8"></a>
+  - [3.9](#objects--camel-case-property-names) Camelcase property names
+
+    > Why? In general this allows for more predictability for object properties, which can lead to less issues in maintenance and troubleshooting.
+
+    ```javascript
+    // bad
+    const bad = {
+      'foo-bar': 3,
+      'bar_bar_A_bar': 4,
+      'dataBlah_Nah_Fam': 5,
+    };
+
+    // good
+    const good = {
+      'fooBar': 3,
+      'barBarABar': 4,
+      'dataBlahNahFam': 5,
+    };
     ```
 
 **[⬆ back to top](#table-of-contents)**
@@ -2262,12 +2270,51 @@ Other Style Guides
     }
     ```
 
+  <a name="control-statement--async-for-each"></a>
+  - [17.3](#control-statements--async-for-each) Do not use async callback functions for a forEach block.
+
+    > Why? Each async function invocation will return a promise that is simply thrown away. The function will also return multiple asyncronous calls, and not pause at ‘await’ lines as predicted. Use a regular for loop
+    or 'Promise.all' instead.
+
+    ```javascript
+    // bad
+    async function printFiles () {
+      const files = await getFilePaths();
+
+      files.forEach(async (file) => {
+        const contents = await fs.readFile(file, 'utf8')
+        console.log(contents)
+      });
+    }
+
+    // good
+    async function printFiles () {
+    const files = await getFilePaths();
+
+    for (const file of files) {
+      const contents = await fs.readFile(file, 'utf8');
+      console.log(contents);
+      }
+    }
+
+    //good
+    async function printFiles () {
+      const files = await getFilePaths();
+
+      await Promise.all(files.map(async (file) => {
+          const contents = await fs.readFile(file, 'utf8')
+          console.log(contents)
+        }));
+      }
+
+    ```
+
 **[⬆ back to top](#table-of-contents)**
 
 ## Comments
 
   <a name="comments--multiline"></a><a name="17.1"></a>
-  - [18.1](#comments--multiline) Use `/** ... */` for multi-line comments.
+  - [18.1](#comments--multiline) Use `/** ... */` for multi-line comments greater than 2 lines. Multiline comments 2 lines are less can be written as consecutive single-line comments. JSDoc blocks must always be multi-line
 
     ```javascript
     // bad
@@ -2292,6 +2339,14 @@ Other Style Guides
 
       // ...
 
+      return element;
+    }
+
+    // good
+    function make(tag) {
+      // remove all commas from the tag
+      // and set that value to element
+      element = tag.replace(',', '');
       return element;
     }
     ```
@@ -2400,6 +2455,159 @@ Other Style Guides
         // TODO: total should be configurable by an options param
         this.total = 0;
       }
+    }
+    ```
+
+  <a name="comments--commented-code"></a><a name="17.6"></a>
+  - [18.7](#comments--commented-code) Do not comment out code.
+
+    > Why? Commented out code leads to a cluttered codeline, maintenance issues, and comprehension issues. In rare circumstances, it will make sense. Usually, it is better to use commit history or seperate local branches to house any unused code.
+
+    ```javascript
+    // bad
+    function make(tag) {
+      /**
+      tag.forEach(element => {
+        performSomeDrasticModificationOfElemnnt(element);
+      });
+      */
+      const element = tag;
+      return element;
+    }
+
+    // good
+    function make(tag) {
+      const element = tag;
+      return element;
+    }
+    ```
+
+  <a name="comments--jsdoc-required"></a><a name="17.7"></a>
+  - [18.8](#comments--jsdoc-required) A JSDoc block should be provided for every function definition, class declaration, and method definition. eslint: ['require-jsdoc'](https://eslint.org/docs/rules/require-jsdoc)
+    > Why? Code should be documented to help with comprehension, and maintenance.
+
+    ```javascript
+    // bad
+    function sum(num1, num2) {
+        return num1 + num2;
+    }
+
+    // good
+    /**
+     * Adds two numbers together.
+     * @param {int} num1 The first number.
+     * @param {int} num2 The second number.
+     * @returns {int} The sum of the two numbers.
+     */
+    function sum(num1, num2) {
+        return num1 + num2;
+    }
+    ```
+
+  <a name="comments--jsdoc-is-valid"></a><a name="17.7"></a>
+  - [18.8](#comments--jsdoc-is-valid) A JSDoc block should be valid when provided. Parameters should be specified in the order in which they appear in the function or method definition. Types and descriptions should be provided for all parameters. All return tags should have their type specified; a description for return tags is not required. eslint: ['valid-jsdoc'](https://eslint.org/docs/rules/valid-jsdoc)
+    > Why? Code should be documented to help with comprehension, and maintenance.
+
+    ```javascript
+    // bad
+    // expected @param tag for parameter num1 but found num instead
+    // missing @param tag for parameter num2
+    // missing return type
+    /**
+     * Add two numbers.
+     * @param {number} num The first number.
+     * @returns The sum of the two numbers.
+     */
+    function add(num1, num2) {
+        return num1 + num2;
+    }
+
+    // bad
+    // missing brace
+    // missing @returns tag
+    /**
+     * @param {string name Whom to greet.
+     */
+    function greet(name) {
+        console.log("Hello " + name);
+    }
+
+    // bad
+    // missing parameter type for num1
+    // missing parameter description for num2
+    /**
+     * Represents a sum.
+     * @constructor
+     * @param num1 The first number.
+     * @param {number} num2
+     */
+    function sum(num1, num2) {
+        this.num1 = num1;
+        this.num2 = num2;
+    }
+
+    // good
+    /**
+     * Add two numbers.
+     * @param {number} num1 The first number.
+     * @param {number} num2 The second number.
+     * @returns {number} The sum of the two numbers.
+     */
+    function add(num1, num2) {
+        return num1 + num2;
+    }
+
+    // good
+    // default options allow missing function description
+    // return type `void` means the function has no `return` statement
+    /**
+     * @param {string} name Whom to greet.
+     * @returns {void}
+     */
+    function greet(name) {
+        console.log("Hello " + name);
+    }
+
+    // good
+    // @constructor tag allows missing @returns tag
+    /**
+     * Represents a sum.
+     * @constructor
+     * @param {number} num1 The first number.
+     * @param {number} num2 The second number.
+     */
+    function sum(num1, num2) {
+        this.num1 = num1;
+        this.num2 = num2;
+    }
+
+    // good
+    // class constructor allows missing @returns tag
+    /**
+     * Represents a sum.
+     */
+    class Sum {
+        /**
+         * @param {number} num1 The first number.
+         * @param {number} num2 The second number.
+         */
+        constructor(num1, num2) {
+            this.num1 = num1;
+            this.num2 = num2;
+        }
+    }
+
+    // @abstract tag allows @returns tag without `return` statement
+    class Widget {
+        /**
+        * When the state changes, does it affect the rendered appearance?
+        * @abstract
+        * @param {Object} state The new state of the widget.
+        * @returns {boolean} Is current appearance inconsistent with new state?
+        */
+        mustRender (state) {
+            throw new Error("Widget subclass did not implement mustRender");
+        }
     }
     ```
 
@@ -2827,6 +3035,27 @@ Other Style Guides
     var y = 2;
     ```
     <!-- markdownlint-enable MD012 -->
+
+  <a name="whitespace--no-newlines-between-multiline-statements"></a>
+  - [19.20](#whitespace--no-newlines-between-multiline-statements) Avoid empty lines inside of multiline statements.
+
+    > Why? Doesn’t significantly improve readability, and syntax highlighting does a better job of improving readability.
+
+    ```javascript
+    // bad
+    const obj = {
+      "foo" : 42
+
+      "bar" : 52
+
+    };
+
+    // good
+    const obj = {
+      "foo" : 42
+      "bar" : 52
+    };
+    ```
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -3341,6 +3570,28 @@ Other Style Guides
     };
     ```
 
+  <a name="naming--filenames"></a>
+  - [23.11](#naming--filenames) Filenames should be completely lowercased and snake-cased.
+
+    > Why? Word seperators are needed to add filename readability. An underscore is able to add readability and it is safe for use in multiple environments without extra overhead. Lowercasing is important because there are some operating systems that are not case sensitive for filenames. Using only lowercased letters prevents the accidental use of two different files that differ only by filename casing, on some operating systems.
+
+    ```javascript
+    // bad
+    exampleFileName.js
+
+    // bad
+    example-File-Name.js
+
+    // bad
+    example-file-name.js
+
+    // bad
+    example_File_Name.js
+
+    // good
+    example_file_name.js
+    ```
+
 **[⬆ back to top](#table-of-contents)**
 
 ## Accessors
@@ -3349,7 +3600,7 @@ Other Style Guides
   - [24.1](#accessors--not-required) Accessor functions for properties are not required.
 
   <a name="accessors--no-getters-setters"></a><a name="23.2"></a>
-  - [24.2](#accessors--no-getters-setters) Do not use JavaScript getters/setters as they cause unexpected side effects and are harder to test, maintain, and reason about. Instead, if you do make accessor functions, use `getVal()` and `setVal('hello')`.
+  - [24.2](#accessors--no-getters-setters) Do not use JavaScript getters/setters as they cause unexpected side effects and are harder to test, maintain, and reason about. Instead, if you do make accessor functions, use `getVal()` and `setVal('hello')`. **This rule is flexible as it is currently under review.**
 
     ```javascript
     // bad
@@ -3512,36 +3763,68 @@ Other Style Guides
 
 **[⬆ back to top](#table-of-contents)**
 
+## File Contents
+
+  <a name="file-contents--max-lines"></a><a name="26.1"></a>
+  - [27.1](#file-contents--max-lines) Files should be less than 300 lines, excluding comments and whitespace. eslint: [`max-lines`](https://eslint.org/docs/rules/max-lines)
+
+    > Why? Large files can be indicative of a code smell. Large files tend to do a lot of things and can make it hard following what’s going.
+
+    ```javascript
+    // examples assume max-lines=2
+
+    // bad
+    var a,
+    b,
+    c;
+
+    // good
+    // a comment in code
+    var a, b,
+    c;
+
+    // good
+    var a, b, c;
+
+    // good
+    // a comment in code; before newline
+
+    var a, b,
+    c;
+    ```
+
+**[⬆ back to top](#table-of-contents)**
+
 ## ECMAScript 5 Compatibility
 
-  <a name="es5-compat--kangax"></a><a name="26.1"></a>
-  - [27.1](#es5-compat--kangax) Refer to [Kangax](https://twitter.com/kangax/)’s ES5 [compatibility table](https://kangax.github.io/es5-compat-table/).
+  <a name="es5-compat--kangax"></a><a name="27.1"></a>
+  - [28.1](#es5-compat--kangax) Refer to [Kangax](https://twitter.com/kangax/)’s ES5 [compatibility table](https://kangax.github.io/es5-compat-table/).
 
 **[⬆ back to top](#table-of-contents)**
 
 <a name="ecmascript-6-styles"></a>
 ## ECMAScript 6+ (ES 2015+) Styles
 
-  <a name="es6-styles"></a><a name="27.1"></a>
-  - [28.1](#es6-styles) This is a collection of links to the various ES6+ features.
+  <a name="es6-styles"></a><a name="28.1"></a>
+  - [29.1](#es6-styles) This is a collection of links to the various ES6+ features.
 
 1. [Arrow Functions](#arrow-functions)
-1. [Classes](#classes--constructors)
-1. [Object Shorthand](#es6-object-shorthand)
-1. [Object Concise](#es6-object-concise)
-1. [Object Computed Properties](#es6-computed-properties)
-1. [Template Strings](#es6-template-literals)
-1. [Destructuring](#destructuring)
-1. [Default Parameters](#es6-default-parameters)
-1. [Rest](#es6-rest)
-1. [Array Spreads](#es6-array-spreads)
-1. [Let and Const](#references)
-1. [Exponentiation Operator](#es2016-properties--exponentiation-operator)
-1. [Iterators and Generators](#iterators-and-generators)
-1. [Modules](#modules)
+2. [Classes](#classes--constructors)
+3. [Object Shorthand](#es6-object-shorthand)
+4. [Object Concise](#es6-object-concise)
+5. [Object Computed Properties](#es6-computed-properties)
+6. [Template Strings](#es6-template-literals)
+7. [Destructuring](#destructuring)
+8. [Default Parameters](#es6-default-parameters)
+9. [Rest](#es6-rest)
+10. [Array Spreads](#es6-array-spreads)
+11. [Let and Const](#references)
+12. [Exponentiation Operator](#es2016-properties--exponentiation-operator)
+13. [Iterators and Generators](#iterators-and-generators)
+14. [Modules](#modules)
 
   <a name="tc39-proposals"></a>
-  - [28.2](#tc39-proposals) Do not use [TC39 proposals](https://github.com/tc39/proposals) that have not reached stage 3.
+  - [29.2](#tc39-proposals) Do not use [TC39 proposals](https://github.com/tc39/proposals) that have not reached stage 3.
 
     > Why? [They are not finalized](https://tc39.github.io/process-document/), and they are subject to change or to be withdrawn entirely. We want to use JavaScript, and proposals are not JavaScript yet.
 
@@ -3553,7 +3836,7 @@ Other Style Guides
   contains utilities that are functionally broken but remain for legacy reasons.
 
   <a name="standard-library--isnan"></a>
-  - [29.1](#standard-library--isnan) Use `Number.isNaN` instead of global `isNaN`.
+  - [30.1](#standard-library--isnan) Use `Number.isNaN` instead of global `isNaN`.
     eslint: [`no-restricted-globals`](https://eslint.org/docs/rules/no-restricted-globals)
 
     > Why? The global `isNaN` coerces non-numbers to numbers, returning true for anything that coerces to NaN.
@@ -3570,7 +3853,7 @@ Other Style Guides
     ```
 
   <a name="standard-library--isfinite"></a>
-  - [29.2](#standard-library--isfinite) Use `Number.isFinite` instead of global `isFinite`.
+  - [30.2](#standard-library--isfinite) Use `Number.isFinite` instead of global `isFinite`.
     eslint: [`no-restricted-globals`](https://eslint.org/docs/rules/no-restricted-globals)
 
     > Why? The global `isFinite` coerces non-numbers to numbers, returning true for anything that coerces to a finite number.
@@ -3589,8 +3872,8 @@ Other Style Guides
 
 ## Testing
 
-  <a name="testing--yup"></a><a name="28.1"></a>
-  - [30.1](#testing--yup) **Yup.**
+  <a name="testing--yup"></a><a name="29.1"></a>
+  - [31.1](#testing--yup) **Yup.**
 
     ```javascript
     function foo() {
@@ -3598,8 +3881,8 @@ Other Style Guides
     }
     ```
 
-  <a name="testing--for-real"></a><a name="28.2"></a>
-  - [30.2](#testing--for-real) **No, but seriously**:
+  <a name="testing--for-real"></a><a name="29.2"></a>
+  - [31.2](#testing--for-real) **No, but seriously**:
     - Whichever testing framework you use, you should be writing tests!
     - Strive to write many small pure functions, and minimize where mutations occur.
     - Be cautious about stubs and mocks - they can make your tests more brittle.
@@ -3703,140 +3986,13 @@ Other Style Guides
 
 **[⬆ back to top](#table-of-contents)**
 
-## In the Wild
-
-  This is a list of organizations that are using this style guide. Send us a pull request and we'll add you to the list.
-
-  - **123erfasst**: [123erfasst/javascript](https://github.com/123erfasst/javascript)
-  - **3blades**: [3Blades](https://github.com/3blades)
-  - **4Catalyzer**: [4Catalyzer/javascript](https://github.com/4Catalyzer/javascript)
-  - **Aan Zee**: [AanZee/javascript](https://github.com/AanZee/javascript)
-  - **Adult Swim**: [adult-swim/javascript](https://github.com/adult-swim/javascript)
-  - **Airbnb**: [airbnb/javascript](https://github.com/airbnb/javascript)
-  - **AltSchool**: [AltSchool/javascript](https://github.com/AltSchool/javascript)
-  - **Apartmint**: [apartmint/javascript](https://github.com/apartmint/javascript)
-  - **Ascribe**: [ascribe/javascript](https://github.com/ascribe/javascript)
-  - **Avalara**: [avalara/javascript](https://github.com/avalara/javascript)
-  - **Avant**: [avantcredit/javascript](https://github.com/avantcredit/javascript)
-  - **Axept**: [axept/javascript](https://github.com/axept/javascript)
-  - **BashPros**: [BashPros/javascript](https://github.com/BashPros/javascript)
-  - **Billabong**: [billabong/javascript](https://github.com/billabong/javascript)
-  - **Bisk**: [bisk](https://github.com/Bisk/)
-  - **Bonhomme**: [bonhommeparis/javascript](https://github.com/bonhommeparis/javascript)
-  - **Brainshark**: [brainshark/javascript](https://github.com/brainshark/javascript)
-  - **CaseNine**: [CaseNine/javascript](https://github.com/CaseNine/javascript)
-  - **Cerner**: [Cerner](https://github.com/cerner/)
-  - **Chartboost**: [ChartBoost/javascript-style-guide](https://github.com/ChartBoost/javascript-style-guide)
-  - **ComparaOnline**: [comparaonline/javascript](https://github.com/comparaonline/javascript-style-guide)
-  - **Compass Learning**: [compasslearning/javascript-style-guide](https://github.com/compasslearning/javascript-style-guide)
-  - **DailyMotion**: [dailymotion/javascript](https://github.com/dailymotion/javascript)
-  - **DoSomething**: [DoSomething/eslint-config](https://github.com/DoSomething/eslint-config)
-  - **Digitpaint** [digitpaint/javascript](https://github.com/digitpaint/javascript)
-  - **Drupal**: [www.drupal.org](https://www.drupal.org/project/drupal)
-  - **Ecosia**: [ecosia/javascript](https://github.com/ecosia/javascript)
-  - **Evernote**: [evernote/javascript-style-guide](https://github.com/evernote/javascript-style-guide)
-  - **Evolution Gaming**: [evolution-gaming/javascript](https://github.com/evolution-gaming/javascript)
-  - **EvozonJs**: [evozonjs/javascript](https://github.com/evozonjs/javascript)
-  - **ExactTarget**: [ExactTarget/javascript](https://github.com/ExactTarget/javascript)
-  - **Expensify** [Expensify/Style-Guide](https://github.com/Expensify/Style-Guide/blob/master/javascript.md)
-  - **Flexberry**: [Flexberry/javascript-style-guide](https://github.com/Flexberry/javascript-style-guide)
-  - **Gawker Media**: [gawkermedia](https://github.com/gawkermedia/)
-  - **General Electric**: [GeneralElectric/javascript](https://github.com/GeneralElectric/javascript)
-  - **Generation Tux**: [GenerationTux/javascript](https://github.com/generationtux/styleguide)
-  - **GoodData**: [gooddata/gdc-js-style](https://github.com/gooddata/gdc-js-style)
-  - **GreenChef**: [greenchef/javascript](https://github.com/greenchef/javascript)
-  - **Grooveshark**: [grooveshark/javascript](https://github.com/grooveshark/javascript)
-  - **Grupo-Abraxas**: [Grupo-Abraxas/javascript](https://github.com/Grupo-Abraxas/javascript)
-  - **Honey**: [honeyscience/javascript](https://github.com/honeyscience/javascript)
-  - **How About We**: [howaboutwe/javascript](https://github.com/howaboutwe/javascript-style-guide)
-  - **Huballin**: [huballin](https://github.com/huballin/)
-  - **HubSpot**: [HubSpot/javascript](https://github.com/HubSpot/javascript)
-  - **Hyper**: [hyperoslo/javascript-playbook](https://github.com/hyperoslo/javascript-playbook/blob/master/style.md)
-  - **InterCity Group**: [intercitygroup/javascript-style-guide](https://github.com/intercitygroup/javascript-style-guide)
-  - **Jam3**: [Jam3/Javascript-Code-Conventions](https://github.com/Jam3/Javascript-Code-Conventions)
-  - **JeopardyBot**: [kesne/jeopardy-bot](https://github.com/kesne/jeopardy-bot/blob/master/STYLEGUIDE.md)
-  - **JSSolutions**: [JSSolutions/javascript](https://github.com/JSSolutions/javascript)
-  - **Kaplan Komputing**: [kaplankomputing/javascript](https://github.com/kaplankomputing/javascript)
-  - **KickorStick**: [kickorstick](https://github.com/kickorstick/)
-  - **Kinetica Solutions**: [kinetica/javascript](https://github.com/kinetica/Javascript-style-guide)
-  - **LEINWAND**: [LEINWAND/javascript](https://github.com/LEINWAND/javascript)
-  - **Lonely Planet**: [lonelyplanet/javascript](https://github.com/lonelyplanet/javascript)
-  - **M2GEN**: [M2GEN/javascript](https://github.com/M2GEN/javascript)
-  - **Mighty Spring**: [mightyspring/javascript](https://github.com/mightyspring/javascript)
-  - **MinnPost**: [MinnPost/javascript](https://github.com/MinnPost/javascript)
-  - **MitocGroup**: [MitocGroup/javascript](https://github.com/MitocGroup/javascript)
-  - **ModCloth**: [modcloth/javascript](https://github.com/modcloth/javascript)
-  - **Money Advice Service**: [moneyadviceservice/javascript](https://github.com/moneyadviceservice/javascript)
-  - **Muber**: [muber](https://github.com/muber/)
-  - **National Geographic**: [natgeo](https://github.com/natgeo/)
-  - **Nimbl3**: [nimbl3/javascript](https://github.com/nimbl3/javascript)
-  - **Nulogy**: [nulogy/javascript](https://github.com/nulogy/javascript)
-  - **Orange Hill Development**: [orangehill/javascript](https://github.com/orangehill/javascript)
-  - **Orion Health**: [orionhealth/javascript](https://github.com/orionhealth/javascript)
-  - **OutBoxSoft**: [OutBoxSoft/javascript](https://github.com/OutBoxSoft/javascript)
-  - **Peerby**: [Peerby/javascript](https://github.com/Peerby/javascript)
-  - **Pier 1**: [Pier1/javascript](https://github.com/pier1/javascript)
-  - **Qotto**: [Qotto/javascript-style-guide](https://github.com/Qotto/javascript-style-guide)
-  - **Razorfish**: [razorfish/javascript-style-guide](https://github.com/razorfish/javascript-style-guide)
-  - **reddit**: [reddit/styleguide/javascript](https://github.com/reddit/styleguide/tree/master/javascript)
-  - **React**: [facebook.github.io/react/contributing/how-to-contribute.html#style-guide](https://facebook.github.io/react/contributing/how-to-contribute.html#style-guide)
-  - **REI**: [reidev/js-style-guide](https://github.com/rei/code-style-guides/)
-  - **Ripple**: [ripple/javascript-style-guide](https://github.com/ripple/javascript-style-guide)
-  - **Sainsbury’s Supermarkets**: [jsainsburyplc](https://github.com/jsainsburyplc)
-  - **SeekingAlpha**: [seekingalpha/javascript-style-guide](https://github.com/seekingalpha/javascript-style-guide)
-  - **Shutterfly**: [shutterfly/javascript](https://github.com/shutterfly/javascript)
-  - **Sourcetoad**: [sourcetoad/javascript](https://github.com/sourcetoad/javascript)
-  - **Springload**: [springload](https://github.com/springload/)
-  - **StratoDem Analytics**: [stratodem/javascript](https://github.com/stratodem/javascript)
-  - **SteelKiwi Development**: [steelkiwi/javascript](https://github.com/steelkiwi/javascript)
-  - **StudentSphere**: [studentsphere/javascript](https://github.com/studentsphere/guide-javascript)
-  - **SwoopApp**: [swoopapp/javascript](https://github.com/swoopapp/javascript)
-  - **SysGarage**: [sysgarage/javascript-style-guide](https://github.com/sysgarage/javascript-style-guide)
-  - **Syzygy Warsaw**: [syzygypl/javascript](https://github.com/syzygypl/javascript)
-  - **Target**: [target/javascript](https://github.com/target/javascript)
-  - **TheLadders**: [TheLadders/javascript](https://github.com/TheLadders/javascript)
-  - **The Nerdery**: [thenerdery/javascript-standards](https://github.com/thenerdery/javascript-standards)
-  - **T4R Technology**: [T4R-Technology/javascript](https://github.com/T4R-Technology/javascript)
-  - **VoxFeed**: [VoxFeed/javascript-style-guide](https://github.com/VoxFeed/javascript-style-guide)
-  - **WeBox Studio**: [weboxstudio/javascript](https://github.com/weboxstudio/javascript)
-  - **Weggo**: [Weggo/javascript](https://github.com/Weggo/javascript)
-  - **Zillow**: [zillow/javascript](https://github.com/zillow/javascript)
-  - **ZocDoc**: [ZocDoc/javascript](https://github.com/ZocDoc/javascript)
-
-**[⬆ back to top](#table-of-contents)**
-
-## Translation
-
-  This style guide is also available in other languages:
-
-  - ![br](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/24/Brazil.png) **Brazilian Portuguese**: [armoucar/javascript-style-guide](https://github.com/armoucar/javascript-style-guide)
-  - ![bg](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/24/Bulgaria.png) **Bulgarian**: [borislavvv/javascript](https://github.com/borislavvv/javascript)
-  - ![ca](https://raw.githubusercontent.com/fpmweb/javascript-style-guide/master/img/catala.png) **Catalan**: [fpmweb/javascript-style-guide](https://github.com/fpmweb/javascript-style-guide)
-  - ![cn](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/24/China.png) **Chinese (Simplified)**: [lin-123/javascript](https://github.com/lin-123/javascript)
-  - ![tw](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/24/Taiwan.png) **Chinese (Traditional)**: [jigsawye/javascript](https://github.com/jigsawye/javascript)
-  - ![fr](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/24/France.png) **French**: [nmussy/javascript-style-guide](https://github.com/nmussy/javascript-style-guide)
-  - ![de](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/24/Germany.png) **German**: [timofurrer/javascript-style-guide](https://github.com/timofurrer/javascript-style-guide)
-  - ![it](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/24/Italy.png) **Italian**: [sinkswim/javascript-style-guide](https://github.com/sinkswim/javascript-style-guide)
-  - ![jp](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/24/Japan.png) **Japanese**: [mitsuruog/javascript-style-guide](https://github.com/mitsuruog/javascript-style-guide)
-  - ![kr](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/24/South-Korea.png) **Korean**: [ParkSB/javascript-style-guide](https://github.com/ParkSB/javascript-style-guide)
-  - ![ru](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/24/Russia.png) **Russian**: [leonidlebedev/javascript-airbnb](https://github.com/leonidlebedev/javascript-airbnb)
-  - ![es](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/24/Spain.png) **Spanish**: [paolocarrasco/javascript-style-guide](https://github.com/paolocarrasco/javascript-style-guide)
-  - ![th](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/24/Thailand.png) **Thai**: [lvarayut/javascript-style-guide](https://github.com/lvarayut/javascript-style-guide)
-  - ![tr](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/24/Turkey.png) **Turkish**: [eraycetinay/javascript](https://github.com/eraycetinay/javascript)
-  - ![ua](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/24/Ukraine.png) **Ukrainian**: [ivanzusko/javascript](https://github.com/ivanzusko/javascript)
-  - ![vn](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/24/Vietnam.png) **Vietnam**: [hngiang/javascript-style-guide](https://github.com/hngiang/javascript-style-guide)
-
 ## The JavaScript Style Guide Guide
 
   - [Reference](https://github.com/airbnb/javascript/wiki/The-JavaScript-Style-Guide-Guide)
 
-## Chat With Us About JavaScript
-
-  - Find us on [gitter](https://gitter.im/airbnb/javascript).
-
 ## Contributors
 
-  - [View Contributors](https://github.com/airbnb/javascript/graphs/contributors)
+  - N/A
 
 ## License
 
